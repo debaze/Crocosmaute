@@ -3,6 +3,7 @@ using BepInEx.Logging;
 using HarmonyLib;
 using LobbyCompatibility.Attributes;
 using LobbyCompatibility.Enums;
+using UnityEngine;
 
 namespace Crocosmaute;
 
@@ -14,12 +15,24 @@ public class Crocosmaute : BaseUnityPlugin
     public static Crocosmaute Instance { get; private set; } = null!;
     internal new static ManualLogSource Logger { get; private set; } = null!;
     internal static Harmony? Harmony { get; set; }
+	internal static AudioClip[] newSFX;
+
 
     private void Awake()
     {
         Logger = base.Logger;
         Instance = this;
 
+        AssetBundle val = AssetBundle.LoadFromFile(((BaseUnityPlugin)Instance).Info.Location.TrimEnd("Crocosmaute.dll".ToCharArray()) + "OUIOUIOUI");
+        if (val == null)
+        {
+            Logger.LogError((object)"Failed to load audio assets!");
+            return;
+        }
+        newSFX = val.LoadAssetWithSubAssets<AudioClip>("assets/bout_de_bois.mp3");
+
+        Logger.LogInfo(newSFX);
+        
         Patch();
 
         Logger.LogInfo($"{MyPluginInfo.PLUGIN_GUID} v{MyPluginInfo.PLUGIN_VERSION} has loaded!");
