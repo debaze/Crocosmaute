@@ -10,7 +10,7 @@ To increment it, you can either modify the version tag in the `.csproj` file dir
 ```xml
 <!-- BepInEx Properties -->
 <PropertyGroup>
-    <AssemblyName>LootQuicklyQuicklyLoot.Crocosmaute</AssemblyName>
+    <AssemblyName>Crocosmaute</AssemblyName>
     <Product>Crocosmaute</Product>
     <!-- Change to whatever version you're currently on. -->
     <Version>1.0.0</Version>
