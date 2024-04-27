@@ -22,17 +22,18 @@ public class Crocosmaute : BaseUnityPlugin
     {
         Logger = base.Logger;
         Instance = this;
-
-        AssetBundle val = AssetBundle.LoadFromFile(((BaseUnityPlugin)Instance).Info.Location.TrimEnd("Crocosmaute.dll".ToCharArray()) + "OUIOUIOUI");
+        Logger.LogInfo(((BaseUnityPlugin)Instance).Info.Location);
+        AssetBundle val = AssetBundle.LoadFromFile(((BaseUnityPlugin)Instance).Info.Location.TrimEnd("Crocosmaute.dll".ToCharArray()) + "freebird");
         if (val == null)
         {
             Logger.LogError((object)"Failed to load audio assets!");
             return;
         }
-        newSFX = val.LoadAssetWithSubAssets<AudioClip>("assets/bout_de_bois.mp3");
+
+        newSFX = val.LoadAssetWithSubAssets<AudioClip>("assets/freebird.mp3");
 
         Logger.LogInfo(newSFX);
-        
+
         Patch();
 
         Logger.LogInfo($"{MyPluginInfo.PLUGIN_GUID} v{MyPluginInfo.PLUGIN_VERSION} has loaded!");
