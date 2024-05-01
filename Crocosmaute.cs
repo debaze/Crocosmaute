@@ -12,48 +12,47 @@ namespace Crocosmaute;
 [LobbyCompatibility(CompatibilityLevel.ClientOnly, VersionStrictness.None)]
 public class Crocosmaute : BaseUnityPlugin
 {
-    public static Crocosmaute Instance { get; private set; } = null!;
-    internal new static ManualLogSource Logger { get; private set; } = null!;
-    internal static Harmony? Harmony { get; set; }
+	public static Crocosmaute Instance { get; private set; } = null!;
+	internal new static ManualLogSource Logger { get; private set; } = null!;
+	internal static Harmony? Harmony { get; set; }
 	internal static AudioClip[] audioClips;
 
+	private void Awake()
+	{
+		Logger = base.Logger;
+		Instance = this;
+		Logger.LogInfo(((BaseUnityPlugin)Instance).Info.Location);
+		AssetBundle val = AssetBundle.LoadFromFile(((BaseUnityPlugin)Instance).Info.Location.TrimEnd(".dll".ToCharArray()));
+		if (val == null)
+		{
+			Logger.LogError((object)"Failed to load audio assets!");
+			return;
+		}
 
-    private void Awake()
-    {
-        Logger = base.Logger;
-        Instance = this;
-        Logger.LogInfo(((BaseUnityPlugin)Instance).Info.Location);
-        AssetBundle val = AssetBundle.LoadFromFile(((BaseUnityPlugin)Instance).Info.Location.TrimEnd(".dll".ToCharArray()));
-        if (val == null)
-        {
-            Logger.LogError((object)"Failed to load audio assets!");
-            return;
-        }
+		audioClips = val.LoadAllAssets<AudioClip>();
 
-        audioClips = val.LoadAllAssets<AudioClip>();
+		Patch();
 
-        Patch();
+		Logger.LogInfo($"{MyPluginInfo.PLUGIN_GUID} v{MyPluginInfo.PLUGIN_VERSION} has loaded!");
+	}
 
-        Logger.LogInfo($"{MyPluginInfo.PLUGIN_GUID} v{MyPluginInfo.PLUGIN_VERSION} has loaded!");
-    }
+	internal static void Patch()
+	{
+		Harmony ??= new Harmony(MyPluginInfo.PLUGIN_GUID);
 
-    internal static void Patch()
-    {
-        Harmony ??= new Harmony(MyPluginInfo.PLUGIN_GUID);
+		Logger.LogDebug("Patching...");
 
-        Logger.LogDebug("Patching...");
+		Harmony.PatchAll();
 
-        Harmony.PatchAll();
+		Logger.LogDebug("Finished patching!");
+	}
 
-        Logger.LogDebug("Finished patching!");
-    }
+	internal static void Unpatch()
+	{
+		Logger.LogDebug("Unpatching...");
 
-    internal static void Unpatch()
-    {
-        Logger.LogDebug("Unpatching...");
+		Harmony?.UnpatchSelf();
 
-        Harmony?.UnpatchSelf();
-
-        Logger.LogDebug("Finished unpatching!");
-    }
+		Logger.LogDebug("Finished unpatching!");
+	}
 }
