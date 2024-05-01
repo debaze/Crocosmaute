@@ -25,7 +25,7 @@ public class Crocosmaute : BaseUnityPlugin {
 		set;
 	}
 
-	internal static AudioClip[] audioClips;
+	internal static AudioClip[]? audioClips;
 
 	private void Awake() {
 		Logger = base.Logger;
