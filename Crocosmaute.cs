@@ -15,7 +15,7 @@ public class Crocosmaute : BaseUnityPlugin
     public static Crocosmaute Instance { get; private set; } = null!;
     internal new static ManualLogSource Logger { get; private set; } = null!;
     internal static Harmony? Harmony { get; set; }
-	internal static AudioClip[] newSFX;
+	internal static AudioClip[] audioClips;
 
 
     private void Awake()
@@ -23,16 +23,16 @@ public class Crocosmaute : BaseUnityPlugin
         Logger = base.Logger;
         Instance = this;
         Logger.LogInfo(((BaseUnityPlugin)Instance).Info.Location);
-        AssetBundle val = AssetBundle.LoadFromFile(((BaseUnityPlugin)Instance).Info.Location.TrimEnd("Crocosmaute.dll".ToCharArray()) + "testbundle");
+        AssetBundle val = AssetBundle.LoadFromFile(((BaseUnityPlugin)Instance).Info.Location.TrimEnd(".dll".ToCharArray()));
         if (val == null)
         {
             Logger.LogError((object)"Failed to load audio assets!");
             return;
         }
 
-        newSFX = val.LoadAssetWithSubAssets<AudioClip>("Assets/BundledAssets/testbundle/bout_de_bois.mp3");
-
-        Logger.LogInfo(newSFX);
+        audioClips = val.LoadAssetWithSubAssets<AudioClip>("Assets/BundledAssets/**");
+    
+        Logger.LogInfo(audioClips.Length);
 
         Patch();
 
