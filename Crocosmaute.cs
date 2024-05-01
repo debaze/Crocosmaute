@@ -30,9 +30,7 @@ public class Crocosmaute : BaseUnityPlugin
             return;
         }
 
-        audioClips = val.LoadAssetWithSubAssets<AudioClip>("Assets/BundledAssets/**");
-    
-        Logger.LogInfo(audioClips.Length);
+        audioClips = val.LoadAllAssets<AudioClip>();
 
         Patch();
 
