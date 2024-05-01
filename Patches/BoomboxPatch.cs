@@ -16,4 +16,10 @@ public class BoomboxPatch {
 
 		___musicAudios = audioClips;
 	}
+
+	[HarmonyPatch("StartMusic")]
+	[HarmonyPostfix]
+	private static void StartMusicPostFix(ref AudioSource ___boomboxAudio) {
+		___boomboxAudio.pitch = Random.Range(.9f, 1.1f);
+	}
 }
