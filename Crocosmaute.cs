@@ -10,52 +10,58 @@ namespace Crocosmaute;
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 [BepInDependency("BMX.LobbyCompatibility", BepInDependency.DependencyFlags.HardDependency)]
 [LobbyCompatibility(CompatibilityLevel.ClientOnly, VersionStrictness.None)]
-public class Crocosmaute : BaseUnityPlugin
-{
-    public static Crocosmaute Instance { get; private set; } = null!;
-    internal new static ManualLogSource Logger { get; private set; } = null!;
-    internal static Harmony? Harmony { get; set; }
-	internal static AudioClip[] newSFX;
+public class Crocosmaute : BaseUnityPlugin {
+	public static Crocosmaute Instance {
+		get; private set;
+	} = null!;
 
+	internal new static ManualLogSource Logger {
+		get;
+		private set;
+	} = null!;
 
-    private void Awake()
-    {
-        Logger = base.Logger;
-        Instance = this;
-        Logger.LogInfo(((BaseUnityPlugin)Instance).Info.Location);
-        AssetBundle val = AssetBundle.LoadFromFile(((BaseUnityPlugin)Instance).Info.Location.TrimEnd("Crocosmaute.dll".ToCharArray()) + "freebird");
-        if (val == null)
-        {
-            Logger.LogError((object)"Failed to load audio assets!");
-            return;
-        }
+	internal static Harmony? Harmony {
+		get;
+		set;
+	}
 
-        newSFX = val.LoadAssetWithSubAssets<AudioClip>("assets/freebird.mp3");
+	internal static AudioClip[]? audioClips;
 
-        Logger.LogInfo(newSFX);
+	private void Awake() {
+		Logger = base.Logger;
+		Instance = this;
 
-        Patch();
+		string assetBundlePath = Instance.Info.Location.TrimEnd(".dll".ToCharArray());
+		AssetBundle assetBundle = AssetBundle.LoadFromFile(assetBundlePath);
 
-        Logger.LogInfo($"{MyPluginInfo.PLUGIN_GUID} v{MyPluginInfo.PLUGIN_VERSION} has loaded!");
-    }
+		if (assetBundle == null) {
+			Logger.LogError("Failed to load AssetBundle.");
 
-    internal static void Patch()
-    {
-        Harmony ??= new Harmony(MyPluginInfo.PLUGIN_GUID);
+			return;
+		}
 
-        Logger.LogDebug("Patching...");
+		audioClips = assetBundle.LoadAllAssets<AudioClip>();
 
-        Harmony.PatchAll();
+		Patch();
 
-        Logger.LogDebug("Finished patching!");
-    }
+		Logger.LogInfo($"{MyPluginInfo.PLUGIN_GUID} v{MyPluginInfo.PLUGIN_VERSION} has loaded!");
+	}
 
-    internal static void Unpatch()
-    {
-        Logger.LogDebug("Unpatching...");
+	internal static void Patch() {
+		Harmony ??= new Harmony(MyPluginInfo.PLUGIN_GUID);
 
-        Harmony?.UnpatchSelf();
+		Logger.LogDebug("Patching...");
 
-        Logger.LogDebug("Finished unpatching!");
-    }
+		Harmony.PatchAll();
+
+		Logger.LogDebug("Finished patching!");
+	}
+
+	internal static void Unpatch() {
+		Logger.LogDebug("Unpatching...");
+
+		Harmony?.UnpatchSelf();
+
+		Logger.LogDebug("Finished unpatching!");
+	}
 }
