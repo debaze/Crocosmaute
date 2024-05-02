@@ -11,10 +11,6 @@ namespace Crocosmaute;
 [BepInDependency("BMX.LobbyCompatibility", BepInDependency.DependencyFlags.HardDependency)]
 [LobbyCompatibility(CompatibilityLevel.ClientOnly, VersionStrictness.None)]
 public class Crocosmaute : BaseUnityPlugin {
-	public static Crocosmaute Instance {
-		get; private set;
-	} = null!;
-
 	internal new static ManualLogSource Logger {
 		get;
 		private set;
@@ -29,9 +25,8 @@ public class Crocosmaute : BaseUnityPlugin {
 
 	private void Awake() {
 		Logger = base.Logger;
-		Instance = this;
 
-		string assetBundlePath = Instance.Info.Location.TrimEnd(".dll".ToCharArray());
+		string assetBundlePath = Info.Location.TrimEnd(".dll".ToCharArray());
 		AssetBundle assetBundle = AssetBundle.LoadFromFile(assetBundlePath);
 
 		if (assetBundle == null) {
